@@ -5,11 +5,15 @@ import pandas as pd
 # __name__ is a special var
 app = Flask(__name__)
 
+# load data from sheet for table
+stations = pd.read_csv("data_small/stations.txt", skiprows=17)
+# only to show certain columns
+stations = stations[['STAID', 'STANAME                                 ']]
 
 # allows user to go straight to home website
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home.html", data=stations.to_html())
 
 
 @app.route("/api/v1/<station>/<date>")
