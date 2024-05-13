@@ -26,6 +26,26 @@ def about(station, date):
             'temperature': temperature}
 
 
+# function for another one station for all dates
+@app.route("/api/v1/<station>")
+def all_data(station):
+    filename_1 = "data_small/TG_STAID" + str(station).zfill(6) + ".txt"
+    df = pd.read_csv(filename_1, skiprows=20, parse_dates=["    DATE"])
+    # giving user all the data
+    result = df.to_dict(orient="records")
+    return result
+
+# function for another one for just the year
+# will have to add a sub dirctly as of right now "/api/v1/<station>/<date>" this will clash but if
+# add "/api/v1/<year>/<station>/<date>" it wont affect anything
+@app.route("/api/v1/yearly/<station>/<year>")
+def yearly(station, year):
+    filename_1 = "data_small/TG_STAID" + str(station).zfill(6) + ".txt"
+    df = pd.read_csv(filename_1, skiprows=20)
+    df["    DATE"] = df["    DATE"].astype(str)
+    result = df[df["    DATE"].str.startswith(str(year))].to_dict(orient='records')
+    return result
+
 # will only run this app when this script is activated directly
 if __name__ == "__main__":
     app.run(debug=True)
